@@ -12,28 +12,30 @@ pub struct Winsdl {
 
 impl Winsdl {
     pub fn new(width: usize, height: usize) -> Result<Self, &'static str> {
-    let sdl = sdl2::init().unwrap();
-    let video_subsystem = sdl.video().unwrap();
+        let sdl = sdl2::init().unwrap();
+        let video = sdl.video().unwrap();
 
-    video_subsystem.text_input().start();
+        let window = video
+            .window("Text Editor", width as u32, height as u32)
+            .position_centered()
+            .build()
+            .unwrap();
 
-    let window = video_subsystem
-        .window("Text Editor", width as u32, height as u32)
-        .position_centered()
-        .build()
-        .unwrap();
+        let mut canvas = window.into_canvas().build().unwrap();
 
-    let canvas = window
-        .into_canvas()
-        .build()
-        .unwrap();
+        canvas.set_draw_color(
+            sdl2::pixels::Color::RGB(30, 30, 30)
+        );
 
-    let event_pump = sdl.event_pump().unwrap();
+        canvas.clear();
+        canvas.present();
 
-    Ok(Self {
-        sdl,
-        canvas,
-        event_pump,
-    })
-}
+        let event_pump = sdl.event_pump().unwrap();
+
+        Ok(Self {
+            sdl,
+            canvas,
+            event_pump,
+        })
+    }
 }

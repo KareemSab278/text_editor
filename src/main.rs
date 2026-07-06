@@ -16,6 +16,7 @@ fn main() {
     let ttf_context = sdl2::ttf::init().expect("Failed to initialize TTF context");
 
     let font = ttf_context.load_font("fonts/DejaVuSans.ttf", 18).expect("Failed to load font");
+    
 
     'running: loop {
         for event in winsdl.event_pump.poll_iter() {
