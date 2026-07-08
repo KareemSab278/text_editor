@@ -1,4 +1,6 @@
 use sdl2::{ event::Event, keyboard::Keycode, pixels::Color };
+use sdl2::keyboard::Mod;
+
 
 mod winsdl;
 mod editor;
@@ -17,7 +19,6 @@ fn main() {
     let ttf_context = sdl2::ttf::init().expect("Failed to initialize TTF context");
 
     let font = ttf_context.load_font("fonts/DejaVuSans.ttf", 18).expect("Failed to load font");
-    
 
     'running: loop {
         for event in winsdl.event_pump.poll_iter() {
@@ -32,25 +33,25 @@ fn main() {
                     }
                 }
 
+                Event::KeyDown { keycode: Some(Keycode::Return), .. } => {
+                    editor.insert('\n');
+                }
+
                 Event::KeyDown { keycode: Some(Keycode::Backspace), .. } => {
                     editor.backspace();
                 }
 
                 Event::KeyDown { keycode: Some(Keycode::S), keymod, .. } => {
-                    if keymod.contains(sdl2::keyboard::Mod::LCTRLMOD) {
-                        file::save_file(&editor.text);
+                    if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
+                        editor.save();
                     }
                 }
 
                 Event::KeyDown { keycode: Some(Keycode::O), keymod, .. } => {
-                    if keymod.contains(sdl2::keyboard::Mod::LCTRLMOD) {
-                        if let Some(content) = file::open_file() {
-                            editor.text = content;
-                            editor.cursor = editor.text.len();
-                        }
+                    if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
+                        editor.open();
                     }
                 }
-
                 _ => {}
             }
         }
@@ -58,20 +59,22 @@ fn main() {
         winsdl.canvas.set_draw_color(Color::RGB(30, 30, 30));
         winsdl.canvas.clear();
 
-        if !editor.text.is_empty() {
-            let surface = font.render(&editor.text).blended(Color::RGB(220, 220, 220)).unwrap();
-
+        let mut y = 10;
+        for line in editor.text.split('\n') {
+            let text_line = if line.is_empty() { " " } else { line };
+            let surface = font.render(text_line).blended(Color::RGB(220, 220, 220)).unwrap();
             let texture_creator = winsdl.canvas.texture_creator();
-
             let texture = texture_creator.create_texture_from_surface(&surface).unwrap();
 
             winsdl.canvas
                 .copy(
                     &texture,
                     None,
-                    Some(sdl2::rect::Rect::new(10, 10, surface.width(), surface.height()))
+                    Some(sdl2::rect::Rect::new(10, y, surface.width(), surface.height())),
                 )
                 .unwrap();
+
+            y += 24;
         }
 
         winsdl.canvas.present();

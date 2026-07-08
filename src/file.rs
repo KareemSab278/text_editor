@@ -8,10 +8,8 @@ pub fn save_file(content: &str) -> () {
         .save_file();
 
     if let Some(path) = file_path {
-        println!("File will be saved to: {:?}", path);
         std::fs::write(path, content).expect("Failed to save file");
     } else {
-        println!("User cancelled the dialog.");
     }
 }
 
@@ -24,7 +22,6 @@ pub fn open_file() -> Option<String> {
         .pick_file();
 
     if let Some(path) = file_path {
-        println!("File will be opened from: {:?}", path);
         match std::fs::read_to_string(&path) {
             Ok(content) => Some(content),
             Err(e) => {
@@ -33,7 +30,6 @@ pub fn open_file() -> Option<String> {
             }
         }
     } else {
-        println!("User cancelled the dialog.");
         None
     }
 }

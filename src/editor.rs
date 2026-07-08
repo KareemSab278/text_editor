@@ -1,3 +1,5 @@
+use crate::file;
+
 pub struct Editor {
     pub text: String,
     pub cursor: usize,
@@ -20,6 +22,17 @@ impl Editor {
         if self.cursor > 0 {
             self.cursor -= 1;
             self.text.remove(self.cursor);
+        }
+    }
+
+    pub fn save(&self) {
+        file::save_file(&self.text);
+    }
+
+    pub fn open(&mut self) {
+        if let Some(content) = file::open_file() {
+            self.text = content;
+            self.cursor = self.text.len();
         }
     }
 
