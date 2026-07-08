@@ -1,13 +1,11 @@
 use sdl2::{ event::Event, keyboard::Keycode, pixels::Color };
-use sdl2::keyboard::Mod;
-
 
 mod winsdl;
 mod editor;
 mod file;
 
 use winsdl::Winsdl;
-use editor::Editor;
+use editor::{Editor, EditorTrait};
 
 fn main() {
     let mut winsdl = Winsdl::new(600, 400).expect("SDL failed");
@@ -50,6 +48,32 @@ fn main() {
                 Event::KeyDown { keycode: Some(Keycode::O), keymod, .. } => {
                     if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
                         editor.open();
+                    }
+                }
+
+                Event::KeyDown { keycode: Some(Keycode::A), keymod, .. } => {
+                    if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
+                        editor.select(0, editor.text.len());
+                    }
+                }
+
+                Event::KeyDown { keycode: Some(Keycode::X), keymod, .. } => {
+                    if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
+                        editor.copy(&winsdl.clipboard);
+                        editor.text.clear();
+                        editor.cursor = 0;
+                    }
+                }
+
+                Event::KeyDown { keycode: Some(Keycode::C), keymod, .. } => {
+                    if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
+                        editor.copy(&winsdl.clipboard);
+                    }
+                }
+
+                Event::KeyDown { keycode: Some(Keycode::V), keymod, .. } => {
+                    if keymod.intersects(sdl2::keyboard::Mod::LCTRLMOD | sdl2::keyboard::Mod::RCTRLMOD) {
+                        editor.paste(&winsdl.clipboard);
                     }
                 }
                 _ => {}

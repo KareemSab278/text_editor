@@ -1,13 +1,10 @@
-use sdl2::{
-    render::Canvas,
-    video::Window,
-    Sdl,
-};
+use sdl2::{ clipboard::ClipboardUtil, render::Canvas, video::Window, Sdl };
 
 pub struct Winsdl {
     pub sdl: Sdl,
     pub canvas: Canvas<Window>,
     pub event_pump: sdl2::EventPump,
+    pub clipboard: ClipboardUtil,
 }
 
 impl Winsdl {
@@ -24,12 +21,11 @@ impl Winsdl {
 
         let mut canvas = window.into_canvas().build().unwrap();
 
-        canvas.set_draw_color(
-            sdl2::pixels::Color::RGB(30, 30, 30)
-        );
+        canvas.set_draw_color(sdl2::pixels::Color::RGB(30, 30, 30));
 
         canvas.clear();
         canvas.present();
+        let clipboard = video.clipboard();
 
         let event_pump = sdl.event_pump().unwrap();
 
@@ -37,6 +33,7 @@ impl Winsdl {
             sdl,
             canvas,
             event_pump,
+            clipboard
         })
     }
 }

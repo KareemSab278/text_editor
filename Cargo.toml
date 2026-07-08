@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+arboard = "3.6.1"
 gl = "0.14"
 rfd = "0.17.2"
 sdl2 = { version = "0.38", default-features = false, features = ["ttf"] }
