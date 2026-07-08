@@ -2,6 +2,7 @@ use sdl2::{ event::Event, keyboard::Keycode, pixels::Color };
 
 mod winsdl;
 mod editor;
+mod file;
 
 use winsdl::Winsdl;
 use editor::Editor;
@@ -21,7 +22,7 @@ fn main() {
     'running: loop {
         for event in winsdl.event_pump.poll_iter() {
             match event {
-                Event::Quit { .. } => {
+                Event::Quit { .. } | Event::KeyDown {keycode: Some(Keycode::Q), .. } => {
                     break 'running;
                 }
 
@@ -37,7 +38,16 @@ fn main() {
 
                 Event::KeyDown { keycode: Some(Keycode::S), keymod, .. } => {
                     if keymod.contains(sdl2::keyboard::Mod::LCTRLMOD) {
-                        editor.save("test.txt");
+                        file::save_file(&editor.text);
+                    }
+                }
+
+                Event::KeyDown { keycode: Some(Keycode::O), keymod, .. } => {
+                    if keymod.contains(sdl2::keyboard::Mod::LCTRLMOD) {
+                        if let Some(content) = file::open_file() {
+                            editor.text = content;
+                            editor.cursor = editor.text.len();
+                        }
                     }
                 }
 

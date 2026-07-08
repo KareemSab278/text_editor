@@ -17,6 +17,7 @@ impl Winsdl {
 
         let window = video
             .window("Text Editor", width as u32, height as u32)
+            .resizable()
             .position_centered()
             .build()
             .unwrap();

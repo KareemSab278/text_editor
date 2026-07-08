@@ -1,5 +1,3 @@
-use std::fs;
-
 pub struct Editor {
     pub text: String,
     pub cursor: usize,
@@ -25,7 +23,4 @@ impl Editor {
         }
     }
 
-    pub fn save(&self, path: &str) {
-        let _ = fs::write(path, &self.text);
-    }
 }
